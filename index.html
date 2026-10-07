@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación de Excel</title>
+<style>
+:root{--excel:#107c41;--dark:#0b5f32;--line:#c7c7c7;--soft:#f3f7f5}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f5;color:#1f2937}
+header{background:linear-gradient(135deg,#107c41,#185c37);color:#fff;padding:24px 15px;text-align:center}
+header h1{margin:0 0 7px;font-size:29px} header p{margin:0;font-size:16px}
+.container{max-width:1100px;margin:20px auto;padding:0 14px}
+.card{background:#fff;border-radius:14px;padding:22px;margin-bottom:20px;box-shadow:0 4px 14px rgba(0,0,0,.09)}
+h2{margin-top:0;color:var(--excel)}
+.data{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+input,select{width:100%;padding:10px;border:1px solid #aaa;border-radius:7px;font-size:15px}
+.question{padding:13px;margin:12px 0;background:#f8fafb;border-left:4px solid #aab5bd;border-radius:7px}
+.question label{display:block;font-weight:bold;margin-bottom:8px;line-height:1.35}
+.formula{font-family:Consolas,monospace}
+.sheetwrap{overflow:auto;margin:14px 0}
+.sheet{border-collapse:collapse;background:white;min-width:650px;width:100%}
+.sheet th,.sheet td{border:1px solid var(--line);height:40px;padding:6px;text-align:center}
+.sheet th{background:#e9ecef}
+.sheet .row{width:42px;background:#e9ecef;font-weight:bold}
+.sheet .text{text-align:left}
+.toolbar{display:flex;flex-wrap:wrap;gap:7px;padding:10px;background:#f0f0f0;border:1px solid #ddd;border-radius:8px}
+.toolbar button{background:#fff;border:1px solid #999;border-radius:5px;padding:8px 12px;cursor:pointer;font-weight:bold}
+.toolbar button:hover{background:#e8f3ed}
+#formatCell{cursor:pointer;transition:.2s}
+.ok{background:#dcfce7!important;border-left-color:#16a34a!important}
+.bad{background:#fee2e2!important;border-left-color:#dc2626!important}
+.btn{border:0;background:var(--excel);color:white;padding:14px 24px;font-size:17px;font-weight:bold;border-radius:9px;cursor:pointer}
+.btn:hover{background:var(--dark)}
+.center{text-align:center}
+.result{display:none;text-align:center;background:#fff;border:3px solid var(--excel);border-radius:15px;padding:26px;margin-bottom:30px}
+.score{font-size:48px;color:var(--excel);font-weight:bold;margin:10px}
+.percent{font-size:24px;font-weight:bold}
+.level{font-size:25px}
+.small{color:#59636e;font-size:14px}
+.legend{background:#ecfdf3;border:1px solid #a7d7bb;padding:11px;border-radius:8px;margin-top:12px}
+@media(max-width:700px){.data{grid-template-columns:1fr}.card{padding:15px}header h1{font-size:23px}}
+@media print{.btn,.toolbar{display:none}body{background:#fff}.card{box-shadow:none}.result{display:block}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 Evaluación Práctica de Excel</h1>
+  <p>Operadores • SUMA • PROMEDIO • Formato de celdas</p>
+</header>
+
+<div class="container">
+<section class="card">
+<h2>👤 Datos del alumno</h2>
+<div class="data">
+<input id="nombre" placeholder="Nombre y apellido">
+<input id="curso" placeholder="Curso">
+<input id="fecha" type="date">
+</div>
+<div class="legend"><b>Indicaciones:</b> resolvé las 20 consignas. En las preguntas de fórmulas escribí el signo <b>=</b> al comienzo, igual que en Excel.</div>
+</section>
+
+<section class="card">
+<h2>Parte 1 — Operadores y fórmulas</h2>
+<div class="sheetwrap"><table class="sheet">
+<tr><th class="row"></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+<tr><th class="row">1</th><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Total</th></tr>
+<tr><th class="row">2</th><td class="text">Cuaderno</td><td>1500</td><td>3</td><td>?</td></tr>
+<tr><th class="row">3</th><td class="text">Lapicera</td><td>800</td><td>5</td><td>?</td></tr>
+</table></div>
+<div class="question"><label>1. Escribí la fórmula para calcular el total de Cuadernos en D2.</label><input class="formula" id="q1" placeholder="=..."></div>
+<div class="question"><label>2. Escribí la fórmula para calcular el total de Lapiceras en D3.</label><input class="formula" id="q2" placeholder="=..."></div>
+<div class="question"><label>3. Si B5 contiene 9000 y C5 contiene 2500, ¿qué fórmula resta C5 a B5?</label><input class="formula" id="q3" placeholder="=..."></div>
+<div class="question"><label>4. Si B6 contiene 12000 y C6 contiene 4, ¿qué fórmula divide B6 por C6?</label><input class="formula" id="q4" placeholder="=..."></div>
+<div class="question"><label>5. ¿Qué operador se utiliza para multiplicar en Excel?</label><select id="q5"><option value="">Elegir...</option><option>+</option><option>-</option><option>*</option><option>/</option></select></div>
+</section>
+
+<section class="card">
+<h2>Parte 2 — SUMA y PROMEDIO</h2>
+<div class="sheetwrap"><table class="sheet">
+<tr><th class="row"></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+<tr><th class="row">1</th><th>Alumno</th><th>Nota 1</th><th>Nota 2</th><th>Nota 3</th><th>Promedio</th><th>Total</th></tr>
+<tr><th class="row">2</th><td>Lucía</td><td>8</td><td>7</td><td>9</td><td>?</td><td>?</td></tr>
+<tr><th class="row">3</th><td>Mateo</td><td>6</td><td>10</td><td>8</td><td>?</td><td>?</td></tr>
+</table></div>
+<div class="question"><label>6. Fórmula para obtener el PROMEDIO de Lucía en E2.</label><input class="formula" id="q6" placeholder="=PROMEDIO(...)"></div>
+<div class="question"><label>7. Fórmula para obtener el PROMEDIO de Mateo en E3.</label><input class="formula" id="q7" placeholder="=PROMEDIO(...)"></div>
+<div class="question"><label>8. Fórmula con SUMA para sumar las tres notas de Lucía en F2.</label><input class="formula" id="q8" placeholder="=SUMA(...)"></div>
+<div class="question"><label>9. ¿Cuál es el promedio de 8, 7 y 9?</label><input id="q9" type="number" placeholder="Escribí el resultado"></div>
+<div class="question"><label>10. Toda fórmula en Excel debe comenzar con:</label><select id="q10"><option value="">Elegir...</option><option>#</option><option>=</option><option>$</option><option>@</option></select></div>
+</section>
+
+<section class="card">
+<h2>Parte 3 — Formato de celdas</h2>
+<p>Usá la barra de herramientas para modificar la celda <b>VENTAS 2026</b>.</p>
+<div class="toolbar">
+<button type="button" onclick="setBold()">B Negrita</button>
+<button type="button" onclick="setCenter()">↔ Centrar</button>
+<button type="button" onclick="setYellow()">🎨 Fondo amarillo</button>
+<button type="button" onclick="setBorder()">▣ Borde</button>
+<button type="button" onclick="setFont()">A+ Fuente</button>
+<button type="button" onclick="resetFmt()">↺ Restablecer</button>
+</div>
+<div class="sheetwrap"><table class="sheet">
+<tr><th class="row"></th><th>A</th><th>B</th><th>C</th></tr>
+<tr><th class="row">1</th><td id="formatCell" class="text">VENTAS 2026</td><td></td><td></td></tr>
+</table></div>
+<div class="legend"><b>Actividad práctica:</b> aplicá a la celda A1 <b>negrita, centrado, fondo amarillo, borde y tamaño de fuente mayor</b>. Esta actividad será verificada en el resultado.</div>
+<div class="question"><label>11. ¿Qué formato hace que un texto se vea más grueso y destacado?</label><select id="q11"><option value="">Elegir...</option><option value="negrita">Negrita</option><option value="moneda">Moneda</option><option value="fecha">Fecha</option></select></div>
+<div class="question"><label>12. Para mostrar correctamente un valor como $15.000, ¿qué formato conviene usar?</label><select id="q12"><option value="">Elegir...</option><option value="fecha">Fecha</option><option value="moneda">Moneda</option><option value="porcentaje">Porcentaje</option></select></div>
+<div class="question"><label>13. ¿Qué herramienta cambia el color interior de una celda?</label><select id="q13"><option value="">Elegir...</option><option value="relleno">Color de relleno</option><option value="formula">Fórmula</option><option value="promedio">Promedio</option></select></div>
+<div class="question"><label>14. ¿Qué recurso permite separar visualmente las celdas de una tabla?</label><select id="q14"><option value="">Elegir...</option><option value="bordes">Bordes</option><option value="suma">SUMA</option><option value="division">División</option></select></div>
+<div class="question"><label>15. ¿Qué alineación coloca el contenido en el centro horizontal de la celda?</label><select id="q15"><option value="">Elegir...</option><option value="izquierda">Izquierda</option><option value="centrar">Centrar</option><option value="derecha">Derecha</option></select></div>
+</section>
+
+<section class="card">
+<h2>Parte 4 — Desafío final</h2>
+<div class="sheetwrap"><table class="sheet">
+<tr><th class="row"></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+<tr><th class="row">1</th><th>Mes</th><th>Ingreso</th><th>Gasto</th><th>Saldo</th></tr>
+<tr><th class="row">2</th><td>Enero</td><td>50000</td><td>32000</td><td>?</td></tr>
+<tr><th class="row">3</th><td>Febrero</td><td>62000</td><td>41000</td><td>?</td></tr>
+<tr><th class="row">4</th><td>Marzo</td><td>58000</td><td>35000</td><td>?</td></tr>
+<tr><th class="row">5</th><td>Promedio</td><td>?</td><td></td><td></td></tr>
+</table></div>
+<div class="question"><label>16. Fórmula para calcular el saldo de Enero en D2.</label><input class="formula" id="q16" placeholder="=..."></div>
+<div class="question"><label>17. Fórmula para calcular el saldo de Febrero en D3.</label><input class="formula" id="q17" placeholder="=..."></div>
+<div class="question"><label>18. Fórmula para calcular el saldo de Marzo en D4.</label><input class="formula" id="q18" placeholder="=..."></div>
+<div class="question"><label>19. Fórmula para calcular el PROMEDIO de ingresos de B2 a B4.</label><input class="formula" id="q19" placeholder="=PROMEDIO(...)"></div>
+<div class="question"><label>20. ¿Cuál es el saldo de Enero?</label><input id="q20" type="number" placeholder="Resultado"></div>
+</section>
+
+<section class="card center">
+<button class="btn" onclick="corregir()">✅ FINALIZAR Y CORREGIR</button>
+<p class="small">Cada consigna vale 1 punto. Puntaje máximo: 20 puntos.</p>
+</section>
+
+<section id="resultado" class="result">
+<h2>RESULTADO FINAL</h2>
+<div id="student"></div>
+<div class="score" id="score"></div>
+<div class="percent" id="percent"></div>
+<div class="level" id="level"></div>
+<p id="formatResult"></p>
+<p id="feedback"></p>
+<button class="btn" onclick="window.print()">🖨️ Imprimir / Guardar resultado</button>
+</section>
+</div>
+
+<script>
+let fmt={bold:false,center:false,yellow:false,border:false,font:false};
+const cell=()=>document.getElementById("formatCell");
+function paint(){
+ cell().style.fontWeight=fmt.bold?"bold":"normal";
+ cell().style.textAlign=fmt.center?"center":"left";
+ cell().style.background=fmt.yellow?"#fff36b":"white";
+ cell().style.border=fmt.border?"3px solid #111":"1px solid #c7c7c7";
+ cell().style.fontSize=fmt.font?"22px":"16px";
+}
+function setBold(){fmt.bold=true;paint()}
+function setCenter(){fmt.center=true;paint()}
+function setYellow(){fmt.yellow=true;paint()}
+function setBorder(){fmt.border=true;paint()}
+function setFont(){fmt.font=true;paint()}
+function resetFmt(){fmt={bold:false,center:false,yellow:false,border:false,font:false};paint()}
+
+function norm(s){return String(s||"").toUpperCase().replace(/\s+/g,"").replace(/;/g,",")}
+function ans(id){return document.getElementById(id).value.trim().toLowerCase()}
+function formulaOK(id,accepted){return accepted.includes(norm(document.getElementById(id).value))}
+function grade(id,ok){
+ const q=document.getElementById(id).closest(".question");
+ q.classList.remove("ok","bad"); q.classList.add(ok?"ok":"bad");
+ return ok?1:0;
+}
+function corregir(){
+ const nombre=document.getElementById("nombre").value.trim();
+ if(!nombre){alert("Antes de finalizar, escribí tu nombre y apellido.");return}
+ let p=0;
+ p+=grade("q1",formulaOK("q1",["=B2*C2","=C2*B2"]));
+ p+=grade("q2",formulaOK("q2",["=B3*C3","=C3*B3"]));
+ p+=grade("q3",formulaOK("q3",["=B5-C5"]));
+ p+=grade("q4",formulaOK("q4",["=B6/C6"]));
+ p+=grade("q5",ans("q5")==="*");
+ p+=grade("q6",formulaOK("q6",["=PROMEDIO(B2:D2)","=PROMEDIO(B2,C2,D2)"]));
+ p+=grade("q7",formulaOK("q7",["=PROMEDIO(B3:D3)","=PROMEDIO(B3,C3,D3)"]));
+ p+=grade("q8",formulaOK("q8",["=SUMA(B2:D2)","=SUMA(B2,C2,D2)"]));
+ p+=grade("q9",Number(document.getElementById("q9").value)===8);
+ p+=grade("q10",ans("q10")==="=");
+ p+=grade("q11",ans("q11")==="negrita");
+ p+=grade("q12",ans("q12")==="moneda");
+ p+=grade("q13",ans("q13")==="relleno");
+ p+=grade("q14",ans("q14")==="bordes");
+ p+=grade("q15",ans("q15")==="centrar");
+ p+=grade("q16",formulaOK("q16",["=B2-C2"]));
+ p+=grade("q17",formulaOK("q17",["=B3-C3"]));
+ p+=grade("q18",formulaOK("q18",["=B4-C4"]));
+ p+=grade("q19",formulaOK("q19",["=PROMEDIO(B2:B4)","=PROMEDIO(B2,B3,B4)"]));
+ p+=grade("q20",Number(document.getElementById("q20").value)===18000);
+
+ const pct=Math.round(p/20*100);
+ let level,feedback;
+ if(p>=18){level="🏆 EXCELENTE";feedback="Dominás muy bien los contenidos evaluados."}
+ else if(p>=16){level="🌟 MUY BUENO";feedback="Muy buen trabajo. Hay pocos contenidos para revisar."}
+ else if(p>=12){level="✅ APROBADO";feedback="Alcanzaste los contenidos básicos. Revisá las respuestas marcadas en rojo."}
+ else if(p>=8){level="📘 EN PROCESO";feedback="Necesitás practicar nuevamente fórmulas, operadores y formatos."}
+ else{level="📚 A REFORZAR";feedback="Conviene repasar los contenidos y volver a practicar."}
+
+ const fmtOK=Object.values(fmt).every(Boolean);
+ document.getElementById("student").innerHTML="<b>Alumno/a:</b> "+nombre+" &nbsp; | &nbsp; <b>Curso:</b> "+(document.getElementById("curso").value||"-");
+ document.getElementById("score").textContent=p+" / 20";
+ document.getElementById("percent").textContent="Porcentaje: "+pct+"%";
+ document.getElementById("level").textContent=level;
+ document.getElementById("formatResult").innerHTML="<b>Actividad práctica de formato:</b> "+(fmtOK?"✔ Correcta":"⚠ Incompleta");
+ document.getElementById("feedback").textContent=feedback;
+ const r=document.getElementById("resultado");r.style.display="block";r.scrollIntoView({behavior:"smooth"});
+}
+document.getElementById("fecha").value=new Date().toISOString().slice(0,10);
+</script>
+</body>
+</html>
